@@ -1,9 +1,10 @@
 needsPackage "DGAlgebras"
 
-isMinimalComplex = method(TypicalValue=>Boolean)
+isMinimalComplex = method()
 
 isMinimalComplex DGAlgebra := A -> (
 	varList = flatten entries vars A.natural;
+	myVar = true;
 	for var in varList do (
 		output = A.diff(var);
 		(M,C) = coefficients(output);
@@ -12,10 +13,12 @@ isMinimalComplex DGAlgebra := A -> (
 		for coef in coefs when noCounterExampleYet do (
 			degList = degree(coef);
 			internalDeg = degList#1;
-			if not internalDeg > 0 then noCounterExampleYet = false
+			if not internalDeg > 0 then (
+				noCounterExampleYet = false;
+				myVar = var
+				)
 			);
 		if not noCounterExampleYet then break
 		);
-	
-	return noCounterExampleYet
+	return myVar
 	)
