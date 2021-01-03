@@ -15,10 +15,18 @@ isMinimalComplex DGAlgebra := A -> (
 			internalDeg = degList#1;
 			if not internalDeg > 0 then (
 				noCounterExampleYet = false;
-				myVar = var
+				myVar = {var,A.diff(var)}
 				)
 			);
 		if not noCounterExampleYet then break
 		);
 	return myVar
 	)
+
+checkClosed = method(Options => {EndDegree => 3})
+checkClosed DGAlgebra := opts -> A -> (B = acyclicClosure(A,EndDegree=>opts.EndDegree);
+	isMinimalComplex B)
+
+checkClosed Ideal := opts -> I -> (K = koszulComplexDGA(I);
+	checkClosed(K,EndDegree=>opts.EndDegree))
+
